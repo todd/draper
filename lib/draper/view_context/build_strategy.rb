@@ -38,9 +38,17 @@ module Draper
 
         def controller
           (Draper::ViewContext.controller || ApplicationController.new).tap do |controller|
-            controller.request ||= ActionController::TestRequest.new if defined?(ActionController::TestRequest)
+            controller.request ||= test_request if defined? ActionController::TestRequest
           end
         end
+
+        def test_request
+	  if Rails::VERSION::MAJOR >= 5
+	    ActionController::TestRequest.create
+	  else
+	    ActionController::TestRequest.new
+	  end
+	end
       end
 
     end
